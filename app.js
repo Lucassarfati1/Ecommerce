@@ -6,6 +6,12 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+const promotionRoutes = require('./routes/promotion');
+const categoryRoutes = require('./routes/category');
+const payRoutes = require('./routes/pay');
+const deliveryRoutes = require('./routes/delivery');
+
+app.use('/deliveries', deliveryRoutes);
 
 var app = express();
 
@@ -26,7 +32,9 @@ app.use('/users', usersRouter);
 app.use(function(req, res, next) {
   next(createError(404));
 });
-
+app.use('/promotions', promotionRoutes);
+app.use('/categories', categoryRoutes);
+app.use('/payments', payRoutes);
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
