@@ -1,6 +1,6 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const payController = require('../controllers/payController');
+import payController from'../controllers/payController.js';
 
 // Ruta para obtener todos los pagos
 router.get('/', payController.getAllPayments);
@@ -17,4 +17,4 @@ router.put('/:id', payController.updatePayment);
 // Ruta para eliminar un pago
 router.delete('/:id', payController.deletePayment);
 
-module.exports = router;
+export default router;

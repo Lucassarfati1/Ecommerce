@@ -1,4 +1,4 @@
-module.exports = (sequelize, DataTypes) => {
+export default (sequelize, DataTypes) => {
     const Promotion = sequelize.define("Promotion",
     {
     // Configuraciones de las columnas.

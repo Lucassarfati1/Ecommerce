@@ -1,4 +1,6 @@
-const { Promotion } = require('../models');
+import db from '../models/index.js';  // Asegúrate de que esta es la ruta correcta
+
+const { Promotion } = db;  // Desestructuramos el modelo Promotion desde db
 
 const promotionController = {
   // Obtener todas las promociones
@@ -30,8 +32,8 @@ const promotionController = {
       const { percentage } = req.body;
 
       // Validación simple
-      if (!percentage || isNaN(percentage)) {
-        return res.status(400).json({ error: 'El campo percentage es obligatorio y debe ser un número' });
+      if (!percentage) {
+        return res.status(400).json({ error: 'El campo "percentage" es obligatorio' });
       }
 
       const newPromotion = await Promotion.create({ percentage });
@@ -54,6 +56,7 @@ const promotionController = {
 
       // Actualizar los datos
       promotion.percentage = percentage || promotion.percentage;
+
       await promotion.save();
 
       res.status(200).json(promotion);
@@ -79,4 +82,4 @@ const promotionController = {
   }
 };
 
-module.exports = promotionController;
+export default promotionController;

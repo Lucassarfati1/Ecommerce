@@ -1,11 +1,12 @@
-const { Pay, Order } = require('../models');
+import db from '../models/index.js';  // Importando el objeto db que contiene todos los modelos
+const { Pay, Order } = db;  // Desestructurando los modelos Pay y Order
 
 const payController = {
   // Obtener todos los pagos
-  async getAllPayments(req, res) {
+  getAllPayments: async (req, res) => {
     try {
       const payments = await Pay.findAll({
-        include: { model: Order, as: 'order' } // Incluye la orden asociada
+        include: { model: Order, as: 'order' }, // Incluye la orden asociada
       });
       res.status(200).json(payments);
     } catch (error) {
@@ -14,10 +15,10 @@ const payController = {
   },
 
   // Obtener un pago por su ID
-  async getPaymentById(req, res) {
+  getPaymentById: async (req, res) => {
     try {
       const payment = await Pay.findByPk(req.params.id, {
-        include: { model: Order, as: 'order' } // Incluye la orden asociada
+        include: { model: Order, as: 'order' }, // Incluye la orden asociada
       });
       if (!payment) {
         return res.status(404).json({ message: 'Pago no encontrado' });
@@ -29,7 +30,7 @@ const payController = {
   },
 
   // Crear un nuevo pago
-  async createPayment(req, res) {
+  createPayment: async (req, res) => {
     try {
       const { id_user, id_order, securityNumber, card, nameCard, maturity } = req.body;
 
@@ -38,7 +39,14 @@ const payController = {
         return res.status(400).json({ error: 'Todos los campos son obligatorios' });
       }
 
-      const newPayment = await Pay.create({ id_user, id_order, securityNumber, card, nameCard, maturity });
+      const newPayment = await Pay.create({
+        id_user,
+        id_order,
+        securityNumber,
+        card,
+        nameCard,
+        maturity,
+      });
       res.status(201).json(newPayment);
     } catch (error) {
       res.status(500).json({ error: 'Error al crear el pago', details: error.message });
@@ -46,7 +54,7 @@ const payController = {
   },
 
   // Actualizar un pago existente
-  async updatePayment(req, res) {
+  updatePayment: async (req, res) => {
     try {
       const { id } = req.params;
       const { id_user, id_order, securityNumber, card, nameCard, maturity } = req.body;
@@ -57,12 +65,14 @@ const payController = {
       }
 
       // Actualizar los datos
-      payment.id_user = id_user || payment.id_user;
-      payment.id_order = id_order || payment.id_order;
-      payment.securityNumber = securityNumber || payment.securityNumber;
-      payment.card = card || payment.card;
-      payment.nameCard = nameCard || payment.nameCard;
-      payment.maturity = maturity || payment.maturity;
+      Object.assign(payment, {
+        id_user: id_user || payment.id_user,
+        id_order: id_order || payment.id_order,
+        securityNumber: securityNumber || payment.securityNumber,
+        card: card || payment.card,
+        nameCard: nameCard || payment.nameCard,
+        maturity: maturity || payment.maturity,
+      });
 
       await payment.save();
 
@@ -73,7 +83,7 @@ const payController = {
   },
 
   // Eliminar un pago
-  async deletePayment(req, res) {
+  deletePayment: async (req, res) => {
     try {
       const { id } = req.params;
       const payment = await Pay.findByPk(id);
@@ -86,7 +96,7 @@ const payController = {
     } catch (error) {
       res.status(500).json({ error: 'Error al eliminar el pago', details: error.message });
     }
-  }
+  },
 };
 
-module.exports = payController;
+export default payController;

@@ -1,5 +1,5 @@
-module.exports = (sequelize, DataTypes) => {
-    const Order = sequelize.define("Orden",
+export default (sequelize, DataTypes) => {
+    const Order = sequelize.define("Order",
     {
     // Configuraciones de las columnas.
     id: {
@@ -20,12 +20,12 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER
     },
     id_delivery: {
-        allowNull: false,
+        allowNull: true,
         type: DataTypes.INTEGER
     },
     id_pay: {
-        allowNull: false,
-        type: DataTypes.STRING
+        allowNull: true,
+        type: DataTypes.INTEGER
     }
 },
     {

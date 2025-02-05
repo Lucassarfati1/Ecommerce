@@ -1,14 +1,20 @@
-var express = require('express');
-var router = express.Router();
+import express from 'express';
+const router = express.Router();
+import userController from '../controllers/userController.js'; // Asegúrate de que la extensión .js esté incluida
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
+// Obtener la lista de usuarios
+router.get('/', userController.listUser);
 
-router.get('/user', userController.registerForm);
-router.post('/user', productController.createUser);
-router.get('/login', userController.login);
-router.post('/product/detail/:id', productController.productEdit);
+// Crear un nuevo usuario
+router.post('/user', userController.createUser);
 
-module.exports = router;
+// Obtener el detalle de un usuario por ID
+router.get('/:id', userController.userDetail);
+
+// Actualizar un usuario por ID
+router.put('/:id', userController.updateUser);
+
+// Eliminar un usuario por ID
+router.delete('/:id', userController.deleteUser);
+
+export default router;

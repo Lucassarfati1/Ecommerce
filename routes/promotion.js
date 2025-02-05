@@ -1,6 +1,6 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const promotionController = require('../controllers/promotionController');
+import promotionController from '../controllers/promotionController.js';
 
 // Ruta para obtener todas las promociones
 router.get('/', promotionController.getAllPromotions);
@@ -17,4 +17,4 @@ router.put('/:id', promotionController.updatePromotion);
 // Ruta para eliminar una promoción
 router.delete('/:id', promotionController.deletePromotion);
 
-module.exports = router;
+export default router;

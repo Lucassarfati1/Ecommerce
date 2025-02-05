@@ -1,4 +1,8 @@
-const { Category } = require('../models');
+import db from '../models/index.js';  // Importa el objeto db
+const { Category } = db;  // Desestructúralo para obtener Category
+
+// Ahora puedes usar Category en tu controlador
+console.log(Category);
 
 const categoryController = {
   // Obtener todas las categorías
@@ -28,14 +32,14 @@ const categoryController = {
   async createCategory(req, res) {
     try {
       const { nombre } = req.body;
-
+      console.log("Recibí un POST con:", req.body);
       // Validación simple
       if (!nombre || nombre.trim() === '') {
         return res.status(400).json({ error: 'El campo nombre es obligatorio' });
       }
 
       const newCategory = await Category.create({ nombre });
-      res.status(201).json(newCategory);
+      return res.status(201).json(newCategory);
     } catch (error) {
       res.status(500).json({ error: 'Error al crear la categoría', details: error.message });
     }
@@ -79,4 +83,4 @@ const categoryController = {
   }
 };
 
-module.exports = categoryController;
+export default categoryController;

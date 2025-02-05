@@ -1,4 +1,4 @@
-module.exports = (sequelize, DataTypes) => {
+export default (sequelize, DataTypes) => {
     const Pay = sequelize.define("Pay",
     {
     // Configuraciones de las columnas.
@@ -33,7 +33,7 @@ module.exports = (sequelize, DataTypes) => {
     }
 },
     {
-    tableName: 'Pay',
+    tableName: 'pay',
     //Si el nombre de la tabla no coincide con el del modelo
     timestamps: false,
     //Si no tengo timestamps

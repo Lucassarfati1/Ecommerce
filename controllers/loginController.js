@@ -1,5 +1,5 @@
 const { Association } = require('sequelize');
-const db = require('../../models/index');
+import {db} from '../../models/index.js';
 
 const loginController = {
     login: (req,res) => {
@@ -24,3 +24,4 @@ const loginController = {
         });
         },
 }
+export default loginController;

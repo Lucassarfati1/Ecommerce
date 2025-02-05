@@ -1,4 +1,4 @@
-module.exports = (sequelize, DataTypes) => {
+export default (sequelize, DataTypes) => {
     const Delivery = sequelize.define("Delivery",
     {
     // Configuraciones de las columnas.

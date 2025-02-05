@@ -1,4 +1,5 @@
-const { Delivery } = require('../models');
+import db from '../models/index.js';  // Importando el objeto db que contiene todos los modelos
+const { Delivery } = db;  // Desestructurando el modelo Delivery
 
 const deliveryController = {
   // Obtener todas las entregas
@@ -83,4 +84,4 @@ const deliveryController = {
   }
 };
 
-module.exports = deliveryController;
+export default deliveryController;
