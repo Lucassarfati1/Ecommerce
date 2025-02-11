@@ -9,6 +9,7 @@ import usersRouter from './routes/users.js';
 import promotionRoutes from './routes/promotion.js';
 import categoryRoutes from './routes/category.js';
 import payRoutes from './routes/pay.js';
+import productRoutes from './routes/product.js';
 import deliveryRoutes from './routes/delivery.js';
 
 const app = express();
@@ -29,6 +30,7 @@ app.use(express.static(path.join(path.resolve(), 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/promotions', promotionRoutes);
+app.use('/products', productRoutes);
 app.use('/categories', categoryRoutes);
 app.use('/payments', payRoutes);
 app.use('/deliveries', deliveryRoutes);

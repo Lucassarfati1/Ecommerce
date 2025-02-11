@@ -9,11 +9,11 @@ export default (sequelize, DataTypes) => {
     },
     nombre: {
         allowNull: false,
-        type: DataTypes.INTEGER
+        type: DataTypes.STRING
     },
     brand: {
         allowNull: false,
-        type: DataTypes.INTEGER
+        type: DataTypes.STRING
     },
     unityPrice: {
         allowNull: false,

@@ -74,8 +74,8 @@ const categoryController = {
       if (!category) {
         return res.status(404).json({ message: 'Categoría no encontrada' });
       }
-
-      await category.destroy();
+      
+      await Category.destroy({ where: { id: id } });
       res.status(200).json({ message: 'Categoría eliminada con éxito' });
     } catch (error) {
       res.status(500).json({ error: 'Error al eliminar la categoría', details: error.message });

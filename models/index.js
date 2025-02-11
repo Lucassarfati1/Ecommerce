@@ -35,9 +35,9 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 console.log("Modelos cargados:", Object.keys(db)); // Verifica que cargue los modelos
-await sequelize.sync({ force: true }); // O alter: true si no quieres perder datos
+await sequelize.sync({ force: false }); // O alter: true si no quieres perder datos
 
-sequelize.sync({ force: true })  // ⚠️ Elimina y recrea todas las tablas
+sequelize.sync({ force: false })  // ⚠️ Elimina y recrea todas las tablas
   .then(() => {
     console.log("Tablas sincronizadas correctamente.");
   })

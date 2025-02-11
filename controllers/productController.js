@@ -1,4 +1,5 @@
-import { Product } from '../../models';
+import db from '../models/index.js';
+const { Product } = db; 
 
 const productController = {
   listProduct: async (req, res) => {
@@ -12,7 +13,7 @@ const productController = {
 
   createProduct: async (req, res) => {
     const { nombre, brand, unityPrice, id_category, id_promotion } = req.body;
-
+    console.log(req.body);
     if (!nombre || !brand || !unityPrice || !id_category) {
       return res.status(400).json({
         success: false,
@@ -68,6 +69,28 @@ const productController = {
         error: error.message,
       });
     }
+  },
+
+  deleteProduct: async (req,res) => {
+    const idProduct = req.params.id;
+    console.log('ID del producto a eliminar:', idProduct);
+    
+    try {
+      Product.destroy({ where: { id: idProduct } });
+
+      return res.json({
+        success: true,
+        message: 'Producto eliminado',
+        
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: 'Error al eliminar el producto',
+        error: error.message,
+      });
+    }
+
   },
 
   productEditForm: async (req, res) => {
