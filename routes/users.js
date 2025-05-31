@@ -1,20 +1,19 @@
-import express from 'express';
-const router = express.Router();
-import userController from '../controllers/userController.js'; // Asegúrate de que la extensión .js esté incluida
+import express from "express"
+import userController from "../controllers/userController.js"
 
-// Obtener la lista de usuarios
-router.get('/', userController.listUser);
+const router = express.Router()
 
-// Crear un nuevo usuario
-router.post('/user', userController.createUser);
+// ========== RUTAS EXISTENTES (CRUD) ==========
+router.get("/", userController.listUser)
+router.post("/", userController.createUser)
+router.get("/:id", userController.userDetail)
+router.put("/:id", userController.updateUser)
+router.delete("/:id", userController.deleteUser)
 
-// Obtener el detalle de un usuario por ID
-router.get('/:id', userController.userDetail);
+// ========== NUEVAS RUTAS DE AUTENTICACIÓN ==========
+router.post("/login", userController.login)
+router.post("/register", userController.register)
+router.get("/verify-token", userController.verifyToken)
+router.post("/logout", userController.logout)
 
-// Actualizar un usuario por ID
-router.put('/:id', userController.updateUser);
-
-// Eliminar un usuario por ID
-router.delete('/:id', userController.deleteUser);
-
-export default router;
+export default router

@@ -3,6 +3,7 @@ import express from 'express';
 import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
+import cors from 'cors';
 
 import indexRouter from './routes/index.js';
 import usersRouter from './routes/users.js';
@@ -13,20 +14,20 @@ import productRoutes from './routes/product.js';
 import deliveryRoutes from './routes/delivery.js';
 
 const app = express();
-const port = process.env.PORT || 3000; // Define el puerto (por defecto 3000)
-app.listen(port, () => {
-  console.log(`Servidor corriendo en http://localhost:${port}`);
-});
+
 // View engine setup
 app.set('views', path.join(path.resolve(), 'views'));
 app.set('view engine', 'jade');
 
+// Middlewares
+app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(path.resolve(), 'public')));
 
+// Routes
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/promotions', promotionRoutes);
@@ -45,9 +46,24 @@ app.use((err, req, res, next) => {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // Render the error page
+  // En lugar de renderizar, enviar JSON para APIs
+  if (req.originalUrl.startsWith('/api') || req.originalUrl.startsWith('/users') || req.originalUrl.startsWith('/products')) {
+    return res.status(err.status || 500).json({
+      success: false,
+      message: err.message,
+      error: req.app.get('env') === 'development' ? err.stack : 'Internal Server Error'
+    });
+  }
+
+  // Render the error page para rutas web
   res.status(err.status || 500);
   res.render('error');
+});
+
+// Start server - ESTO VA AL FINAL
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Servidor corriendo en http://localhost:${port}`);
 });
 
 export default app;

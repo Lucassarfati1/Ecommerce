@@ -11,10 +11,6 @@ export default (sequelize, DataTypes) => {
         allowNull: false,
         type: DataTypes.STRING
     },
-    lastName: {
-        allowNull: false,
-        type: DataTypes.STRING
-    },
     genre: {
         allowNull: false,
         type: DataTypes.STRING

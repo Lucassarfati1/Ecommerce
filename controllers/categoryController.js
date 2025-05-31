@@ -31,14 +31,14 @@ const categoryController = {
   // Crear una nueva categoría
   async createCategory(req, res) {
     try {
-      const { nombre } = req.body;
+      const { name, description} = req.body;
       console.log("Recibí un POST con:", req.body);
       // Validación simple
-      if (!nombre || nombre.trim() === '') {
-        return res.status(400).json({ error: 'El campo nombre es obligatorio' });
+      if (!name || name.trim() === '') {
+        return res.status(400).json({ error: 'El campo name es obligatorio' });
       }
 
-      const newCategory = await Category.create({ nombre });
+      const newCategory = await Category.create({ name, description });
       return res.status(201).json(newCategory);
     } catch (error) {
       res.status(500).json({ error: 'Error al crear la categoría', details: error.message });
@@ -49,7 +49,7 @@ const categoryController = {
   async updateCategory(req, res) {
     try {
       const { id } = req.params;
-      const { nombre } = req.body;
+      const { name,description } = req.body;
 
       const category = await Category.findByPk(id);
       if (!category) {
@@ -57,7 +57,7 @@ const categoryController = {
       }
 
       // Actualizar los datos
-      category.nombre = nombre || category.nombre;
+      category.name = name || category.name;
       await category.save();
 
       res.status(200).json(category);
