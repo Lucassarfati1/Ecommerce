@@ -27,7 +27,7 @@ const userController = {
 
   // Crear un nuevo usuario
   createUser: async (req, res) => {
-    const { name, lastName, genre, age, phone, email, password } = req.body
+    const { name, lastName, genre, age, phone,address, email, password } = req.body
 
     if (!name || !lastName || !genre || !age || !phone || !email || !password) {
       return res.status(400).json({
@@ -56,6 +56,7 @@ const userController = {
         genre,
         age,
         phone,
+        address,
         email,
         password: hashedPassword,
       })
@@ -111,10 +112,10 @@ const userController = {
   // Actualizar un usuario existente
   updateUser: async (req, res) => {
     const userId = req.params.id
-    const { name, lastName, genre, age, phone, email, password } = req.body
+    const { name, lastName, genre, age, phone, address, email, password } = req.body
 
     try {
-      const updateData = { name, lastName, genre, age, phone, email }
+      const updateData = { name, lastName, genre, age, phone,address, email }
 
       // Si se proporciona nueva contraseña, encriptarla
       if (password) {
@@ -239,10 +240,10 @@ const userController = {
 
   // Registro de usuario
   register: async (req, res) => {
-    const { name, lastName, genre, age, email, password, confirmPassword } = req.body
+    const { name, lastName, genre, age, address, email, password, confirmPassword } = req.body
 
     // Validaciones
-    if (!name || !lastName || !genre || !age || !email || !password || !confirmPassword) {
+    if (!name || !lastName || !genre || !age || !address || !email || !password || !confirmPassword) {
       return res.status(400).json({
         success: false,
         message: "Todos los campos son obligatorios",
@@ -284,6 +285,7 @@ const userController = {
         genre,
         age,
         phone: "", // Campo opcional
+        address,
         email,
         password: hashedPassword,
       })

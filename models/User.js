@@ -23,6 +23,10 @@ export default (sequelize, DataTypes) => {
         allowNull: false,
         type: DataTypes.STRING
     },
+    address: {
+        allowNull: false,
+        type: DataTypes.STRING
+    },
     email: {
         type: DataTypes.STRING,
         allowNull:false
