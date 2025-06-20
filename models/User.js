@@ -1,53 +1,62 @@
 export default (sequelize, DataTypes) => {
-    const User = sequelize.define("User",
-    {
-    // Configuraciones de las columnas.
+  const User = sequelize.define("User", {
     id: {
-        autoIncrement: true,
-        primaryKey: true,
-        type: DataTypes.INTEGER
+      autoIncrement: true,
+      primaryKey: true,
+      type: DataTypes.INTEGER
     },
     name: {
-        allowNull: false,
-        type: DataTypes.STRING
+      allowNull: false,
+      type: DataTypes.STRING
     },
     genre: {
-        allowNull: false,
-        type: DataTypes.STRING
+      allowNull: false,
+      type: DataTypes.STRING
     },
     age: {
-        allowNull: false,
-        type: DataTypes.INTEGER
+      allowNull: false,
+      type: DataTypes.INTEGER
     },
     phone: {
-        allowNull: false,
-        type: DataTypes.STRING
+      allowNull: false,
+      type: DataTypes.STRING
     },
     address: {
-        allowNull: false,
-        type: DataTypes.STRING
+      allowNull: false,
+      type: DataTypes.STRING
     },
     email: {
-        type: DataTypes.STRING,
-        allowNull:false
+      type: DataTypes.STRING,
+      allowNull: false
     },
     password: {
-        type: DataTypes.STRING,
-        allowNull:false
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    id_role: { // 👈 Clave foránea hacia la tabla roles
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'roles', // nombre de la tabla
+        key: 'id'
+      }
     }
-},
-    {
+  }, {
     tableName: 'users',
-    //Si el nombre de la tabla no coincide con el del modelo
     timestamps: false,
-    //Si no tengo timestamps
-    });
-    User.associate = (models) => {
-        User.hasMany(models.Order, {
-            foreignKey: 'id_user',
-            as: 'orders'
-        });
-    };
+  });
 
-    return User;
-    }
+  User.associate = (models) => {
+    User.hasMany(models.Order, {
+      foreignKey: 'id_user',
+      as: 'orders'
+    });
+
+    User.belongsTo(models.Role, { // 👈 Relación con Role
+      foreignKey: 'id_role',
+      as: 'role'
+    });
+  };
+
+  return User;
+};

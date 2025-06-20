@@ -1,6 +1,8 @@
 import db from "../models/index.js"
 import bcrypt from "bcryptjs" // Cambiado de 'bcrypt' a 'bcryptjs'
 import jwt from "jsonwebtoken"
+import { generateToken } from "../utils/jwt.js"
+import { Utils } from "sequelize"
 
 const userController = {
   // ========== CRUD EXISTENTE ==========
@@ -175,68 +177,79 @@ const userController = {
   // ========== NUEVAS FUNCIONES DE AUTENTICACIÓN ==========
 
   // Login de usuario
-  login: async (req, res) => {
-    const { email, password } = req.body
+ // Login de usuario
+login: async (req, res) => {
+  const { email, password } = req.body;
 
-    if (!email || !password) {
-      return res.status(400).json({
+  if (!email || !password) {
+    return res.status(400).json({
+      success: false,
+      message: "Email y contraseña son obligatorios",
+    });
+  }
+
+  try {
+    // Buscar usuario por email e incluir su rol
+    const user = await User.findOne({
+      where: { email },
+      include: {
+        model: Role,
+        as: 'role', // 👈 importante si usás alias en la asociación
+        attributes: ['id', 'name'] // 👈 solo lo necesario
+      }
+    });
+
+    if (!user) {
+      return res.status(401).json({
         success: false,
-        message: "Email y contraseña son obligatorios",
-      })
+        message: "Credenciales inválidas",
+      });
     }
 
-    try {
-      // Buscar usuario por email
-      const user = await db.User.findOne({ where: { email } })
+    // Verificar contraseña
+    const isValidPassword = await bcrypt.compare(password, user.password);
 
-      if (!user) {
-        return res.status(401).json({
-          success: false,
-          message: "Credenciales inválidas",
-        })
-      }
-
-      // Verificar contraseña
-      const isValidPassword = await bcrypt.compare(password, user.password)
-
-      if (!isValidPassword) {
-        return res.status(401).json({
-          success: false,
-          message: "Credenciales inválidas",
-        })
-      }
-
-      // Generar JWT token
-      const token = jwt.sign(
-        {
-          userId: user.id,
-          email: user.email,
-          name: user.name,
-        },
-        process.env.JWT_SECRET || "tu_clave_secreta_temporal_cambiar_en_produccion",
-        { expiresIn: "24h" },
-      )
-
-      // Respuesta sin contraseña
-      const userResponse = { ...user.toJSON() }
-      delete userResponse.password
-
-      res.json({
-        success: true,
-        message: "Login exitoso",
-        data: {
-          user: userResponse,
-          token: token,
-        },
-      })
-    } catch (error) {
-      res.status(500).json({
+    if (!isValidPassword) {
+      return res.status(401).json({
         success: false,
-        message: "Error en el login",
-        error: error.message,
-      })
+        message: "Credenciales inválidas",
+      });
     }
-  },
+
+    // Generar JWT token
+    const token = jwt.sign(
+      {
+        userId: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role?.name, // 👈 podés incluir el rol en el token si lo usás luego
+      },
+      process.env.JWT_SECRET || "tu_clave_secreta_temporal_cambiar_en_produccion",
+      { expiresIn: "24h" }
+    );
+
+    // Respuesta sin contraseña
+    const userResponse = { ...user.toJSON() };
+    delete userResponse.password;
+
+    res.json({
+      success: true,
+      message: "Login exitoso",
+      data: {
+        user: userResponse,
+        token,
+      },
+    });
+  } catch (error) {
+    console.error("Error en login:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error en el login",
+      error: error.message,
+    });
+  }
+},
+
 
   // Registro de usuario
   register: async (req, res) => {

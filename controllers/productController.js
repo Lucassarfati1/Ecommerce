@@ -1,5 +1,7 @@
 import db from '../models/index.js';
 import { Op } from 'sequelize';
+import streamifier from 'streamifier';
+import cloudinary from '../utils/cloudinary.js';
 
 const { Product, Category, Promotion } = db; 
 
@@ -22,41 +24,58 @@ const productController = {
       });
     }
   },
+createProduct: async (req, res) => {
+  const { nombre, brand, unityPrice, id_category, id_promotion } = req.body;
+  console.log(req.body);
 
-  createProduct: async (req, res) => {
-    const { nombre, brand, unityPrice, id_category, id_promotion, condition } = req.body;
-    console.log(req.body);
-    
-    if (!nombre || !brand || !unityPrice || !id_category) {
-      return res.status(400).json({
-        success: false,
-        message: 'Todos los campos obligatorios deben ser proporcionados.',
+  if (!nombre || !brand || !unityPrice || !id_category) {
+    return res.status(400).json({
+      success: false,
+      message: 'Todos los campos obligatorios deben ser proporcionados.',
+    });
+  }
+
+  try {
+    let imageUrl = null;
+
+    if (req.file) {
+      const result = await new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { folder: 'products' },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve(result);
+          }
+        );
+        streamifier.createReadStream(req.file.buffer).pipe(stream);
       });
+      imageUrl = result.secure_url;
     }
 
-    try {
-      const newProduct = await Product.create({
-        nombre,
-        brand,
-        unityPrice,
-        id_category,
-        id_promotion: id_promotion || null,
-        condition: condition || 'nuevo', // Valor por defecto
-      });
+    const newProduct = await Product.create({
+      nombre,
+      brand,
+      unityPrice: parseInt(unityPrice, 10),
+      id_category: parseInt(id_category, 10),
+      id_promotion: id_promotion ? parseInt(id_promotion, 10) : null,
+      img: imageUrl,
+    });
 
-      return res.status(201).json({
-        success: true,
-        message: 'Producto creado exitosamente',
-        data: newProduct,
-      });
-    } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: 'Error al crear el producto',
-        error: error.message,
-      });
-    }
-  },
+    console.log(newProduct);
+    return res.status(201).json({
+      success: true,
+      message: 'Producto creado exitosamente',
+      data: newProduct,
+    });
+  } catch (error) {
+    console.error("Error al crear producto:", error); // Agregalo para que veas en consola
+    return res.status(500).json({
+      success: false,
+      message: 'Error al crear el producto',
+      error: error.message,
+    });
+  }
+},
 
   productDetail: async (req, res) => {
     const productId = req.params.id;
@@ -154,9 +173,9 @@ const productController = {
 
   productEdit: async (req, res) => {
     const productId = req.params.id;
-    const { nombre, brand, unityPrice, id_category, id_promotion, condition } = req.body;
+    const { nombre, brand, unityPrice, id_category, id_promotion, condition, img } = req.body;
 
-    if (!nombre || !brand || !unityPrice || !id_category) {
+    if (!nombre || !brand || !unityPrice || !id_category || !img) {
       return res.status(400).json({
         success: false,
         message: 'Todos los campos obligatorios deben ser proporcionados.',
@@ -172,6 +191,7 @@ const productController = {
           id_category,
           id_promotion: id_promotion || null,
           condition: condition || 'nuevo',
+          img: img || null,
         },
         {
           where: { id: productId },

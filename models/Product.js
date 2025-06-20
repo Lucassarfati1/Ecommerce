@@ -26,6 +26,10 @@ export default (sequelize, DataTypes) => {
     id_promotion: {
         allowNull: true,
         type: DataTypes.INTEGER
+    },
+    img: {
+        allowNull:true,
+        type: DataTypes.STRING
     }
    
 },
