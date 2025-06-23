@@ -190,10 +190,10 @@ login: async (req, res) => {
 
   try {
     // Buscar usuario por email e incluir su rol
-    const user = await User.findOne({
+    const user = await db.User.findOne({
       where: { email },
       include: {
-        model: Role,
+        model: db.Role,
         as: 'role', // 👈 importante si usás alias en la asociación
         attributes: ['id', 'name'] // 👈 solo lo necesario
       }

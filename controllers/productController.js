@@ -10,7 +10,7 @@ const productController = {
   
   listProduct: async (req, res) => {
     try {
-      const products = await Product.findAll();
+      const products = await Product.findAll({attributes:['id','nombre','brand','unityPrice','img']});
       return res.json({
         success: true,
         message: 'Productos obtenidos exitosamente',

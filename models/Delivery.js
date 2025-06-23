@@ -31,6 +31,13 @@ export default (sequelize, DataTypes) => {
     timestamps: false,
     //Si no tengo timesamps
     });
-   
+    Delivery.associate = (models) => {
+        
+    Delivery.belongsTo(models.Order, {
+            foreignKey: 'id_order',
+            as: 'order'
+        });
+
+    }
     return Delivery;
     }

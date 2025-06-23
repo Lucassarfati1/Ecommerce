@@ -33,14 +33,16 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    id_role: { // 👈 Clave foránea hacia la tabla roles
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      references: {
-        model: 'roles', // nombre de la tabla
-        key: 'id'
-      }
-    }
+    id_role: {
+  type: DataTypes.INTEGER,
+  allowNull: true, // ← importante
+  references: {
+    model: 'roles',
+    key: 'id'
+  },
+  onDelete: 'CASCADE',
+  onUpdate: 'CASCADE'
+}
   }, {
     tableName: 'users',
     timestamps: false,

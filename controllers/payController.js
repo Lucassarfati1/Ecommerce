@@ -32,13 +32,6 @@ const payController = {
   // Crear un nuevo pago
   createPayment: async (req, res) => {
     try {
-      const { id_user, id_order, securityNumber, card, nameCard, maturity } = req.body;
-
-      // Validación simple
-      if (!id_user || !id_order || !securityNumber || !card || !nameCard || !maturity) {
-        return res.status(400).json({ error: 'Todos los campos son obligatorios' });
-      }
-
       const newPayment = await Pay.create({
         id_user,
         id_order,
